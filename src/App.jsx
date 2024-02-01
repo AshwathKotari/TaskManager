@@ -1,20 +1,26 @@
-import { useState,useEffect } from 'react'
+import { useState , useEffect } from 'react'
 
 
 
 function App() {
-  const [Task,setTask] = useState("")
+  const [TasksArray,setTasksArray] = useState([])
+  const [Task,setTask] = useState('')
+
+ 
+  
   function Submitted(e){
     e.preventDefault()
-    
-
+    setTasksArray(prevTasksArray => [...TasksArray,Task])
     setTask("")
   }
-  const [List,setList] = useState([])
-  const Fruits = ["a","b","c","d"]
+
+  
+  
   return (
     <>
-      Task Manager:
+     <h1>Task Master</h1> 
+     <p>Do a task, Feel good!!</p>
+      
       <form onSubmit={Submitted}>
         <label htmlFor='input'>Enter Task: </label>
         <input id='input'
@@ -29,8 +35,8 @@ function App() {
         <button type='submit' disabled={!Task}>Add Task</button>
       </form>
       
-        {Fruits.map((f)=>(<li>{f}</li>))}
-        
+        {TasksArray.map((t)=><li>{t}<button>Delete</button></li>)}
+       
     </>
   )
 }
