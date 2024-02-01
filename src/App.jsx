@@ -1,12 +1,21 @@
 import { useState , useEffect } from 'react'
 
+//Concepts Learnd and used : useState , useEffect , map and splice , Form
+
 
 
 function App() {
-  const [TasksArray,setTasksArray] = useState([])
+  const [TasksArray,setTasksArray] = useState(() => {
+    
+    const storedTasks = localStorage.getItem('TasksArray');
+    return storedTasks ? JSON.parse(storedTasks) : [];
+  })
   const [Task,setTask] = useState('')
 
- 
+  useEffect(() => {
+    
+    localStorage.setItem('TasksArray', JSON.stringify(TasksArray));
+  }, [TasksArray]);
   
   function Submitted(e){
     e.preventDefault();
