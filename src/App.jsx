@@ -9,11 +9,18 @@ function App() {
  
   
   function Submitted(e){
-    e.preventDefault()
-    setTasksArray(prevTasksArray => [...TasksArray,Task])
-    setTask("")
+    e.preventDefault();
+    setTasksArray(prevTasksArray => [...TasksArray,Task]);
+    setTask("");
   }
 
+  function handleDelete(index) {
+    setTasksArray(prevTasksArray => {
+      const updatedTasks = [...prevTasksArray];
+      updatedTasks.splice(index, 1);
+      return updatedTasks;
+    });
+  }
   
   
   return (
@@ -30,12 +37,12 @@ function App() {
         onChange={e=>setTask(e.target.value)}
         
         
-        >
-        </input>
+        />
+       
         <button type='submit' disabled={!Task}>Add Task</button>
       </form>
       
-        {TasksArray.map((t)=><li>{t}<button>Delete</button></li>)}
+        {TasksArray.map((t,index)=><li key={index}>{t}<button onClick={() => handleDelete(index)}>Delete</button></li>)}
        
     </>
   )
