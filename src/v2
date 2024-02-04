@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+
 function App() {
   const [tasksArray, setTasksArray] = useState(() => {
     const storedTasks = localStorage.getItem('TasksArray');
@@ -18,7 +19,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem('TasksArray', JSON.stringify(tasksArray));
     localStorage.setItem('Timers', JSON.stringify(timers));
-  }, [tasksArray, timers]);
+  }, [tasksArray,timers]);
 
   const handleTaskChange = (e) => {
     setTask(e.target.value);
@@ -31,7 +32,6 @@ function App() {
     setTimers((prevTimers) => [...prevTimers, 0]);
     setTaskCompleted((prevCompleted) => [...prevCompleted, false]);
   };
-  
 
   const startTimer = (index) => {
     const interval = setInterval(() => {
@@ -112,29 +112,26 @@ function App() {
       </form>
 
       <ul>
-      {tasksArray.map((task, index) => (
-  <li key={index}>
-    <input
-      type="checkbox"
-      checked={taskCompleted[index]}
-      onChange={() => handleCheckboxChange(index)}
-    />
-    <span style={{ textDecoration: taskCompleted[index] ? 'line-through' : 'none' }}>
-      {task}
-    </span>{' '}
-    <button onClick={() => startTimer(index)} disabled={timerIntervals[index]}>
-      Start
-    </button>{' '}
-    <button onClick={() => stopTimer(index)} disabled={!timerIntervals[index]}>
-      Stop
-    </button>{' '}
-    {formatTime(timers[index])}
-    <button onClick={() => handleDelete(index)}>Delete</button>
-  </li>
-))}
-
-
-
+        {tasksArray.map((t, index) => (
+          <li key={index}>
+            <input
+              type="checkbox"
+              checked={taskCompleted[index]}
+              onChange={() => handleCheckboxChange(index)}
+            />
+            <span style={{ textDecoration: taskCompleted[index] ? 'line-through' : 'none' }}>
+              {t}
+            </span>{' '}
+            <button onClick={() => startTimer(index)} disabled={timerIntervals[index]}>
+              Start
+            </button>{' '}
+            <button onClick={() => stopTimer(index)} disabled={!timerIntervals[index]}>
+              Stop
+            </button>{' '}
+            {formatTime(timers[index])}
+            <button onClick={() => handleDelete(index)}>Delete</button>
+          </li>
+        ))}
       </ul>
     </>
   );
