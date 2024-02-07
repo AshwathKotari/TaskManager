@@ -1,4 +1,6 @@
+// App.js
 import React, { useState, useEffect } from 'react';
+import './App.css'; // Import CSS file for styling
 
 function App() {
   const [tasksArray, setTasksArray] = useState(() => {
@@ -12,7 +14,7 @@ function App() {
     return storedTimers ? JSON.parse(storedTimers) : Array(tasksArray.length).fill(0);
   });
 
-  const [timerIntervals, setTimerIntervals] = useState([]);
+  const [timerIntervals, setTimerIntervals] = useState({});
   const [taskCompleted, setTaskCompleted] = useState(Array(tasksArray.length).fill(false));
 
   useEffect(() => {
@@ -31,7 +33,6 @@ function App() {
     setTimers((prevTimers) => [...prevTimers, 0]);
     setTaskCompleted((prevCompleted) => [...prevCompleted, false]);
   };
-  
 
   const startTimer = (index) => {
     const interval = setInterval(() => {
@@ -41,25 +42,22 @@ function App() {
         return newTimers;
       });
     }, 1000);
-    setTimerIntervals((prevIntervals) => [...prevIntervals, interval]);
+
+    setTimerIntervals((prevIntervals) => ({
+      ...prevIntervals,
+      [index]: interval,
+    }));
   };
 
   const stopTimer = (index) => {
     clearInterval(timerIntervals[index]);
-    const newIntervals = [...timerIntervals];
-    newIntervals.splice(index, 1);
+    const newIntervals = { ...timerIntervals };
+    delete newIntervals[index];
     setTimerIntervals(newIntervals);
   };
 
   const handleDelete = (index) => {
     clearInterval(timerIntervals[index]);
-    const newTimers = [...timers];
-    newTimers.splice(index, 1);
-    setTimers(newTimers);
-
-    const newIntervals = [...timerIntervals];
-    newIntervals.splice(index, 1);
-    setTimerIntervals(newIntervals);
 
     setTasksArray((prevTasksArray) => {
       const updatedTasks = [...prevTasksArray];
@@ -67,10 +65,22 @@ function App() {
       return updatedTasks;
     });
 
+    setTimers((prevTimers) => {
+      const updatedTimers = [...prevTimers];
+      updatedTimers.splice(index, 1);
+      return updatedTimers;
+    });
+
     setTaskCompleted((prevCompleted) => {
       const updatedCompleted = [...prevCompleted];
       updatedCompleted.splice(index, 1);
       return updatedCompleted;
+    });
+
+    setTimerIntervals((prevIntervals) => {
+      const newIntervals = { ...prevIntervals };
+      delete newIntervals[index];
+      return newIntervals;
     });
   };
 
@@ -93,50 +103,49 @@ function App() {
   };
 
   return (
-    <>
-      <h1>Task Master</h1>
-      <p>Do a task, Feel good!!</p>
+    <div className="container">
+      <h1 className="title">Task Master</h1>
+      <p className="subtitle">Do a task, Feel good!!</p>
 
       <form onSubmit={addTask}>
-        <label htmlFor="input">Enter Task: </label>
+        <label htmlFor="input" className="form-label">Enter Task: </label>
         <input
           id="input"
           type="text"
           placeholder="Task Name"
           value={task}
           onChange={handleTaskChange}
+          className="form-input"
         />
-        <button type="submit" disabled={!task}>
+        <button type="submit" disabled={!task} className="form-button">
           Add Task
         </button>
       </form>
 
-      <ul>
-      {tasksArray.map((task, index) => (
-  <li key={index}>
-    <input
-      type="checkbox"
-      checked={taskCompleted[index]}
-      onChange={() => handleCheckboxChange(index)}
-    />
-    <span style={{ textDecoration: taskCompleted[index] ? 'line-through' : 'none' }}>
-      {task}
-    </span>{' '}
-    <button onClick={() => startTimer(index)} disabled={timerIntervals[index]}>
-      Start
-    </button>{' '}
-    <button onClick={() => stopTimer(index)} disabled={!timerIntervals[index]}>
-      Stop
-    </button>{' '}
-    {formatTime(timers[index])}
-    <button onClick={() => handleDelete(index)}>Delete</button>
-  </li>
-))}
-
-
-
+      <ul className="task-list">
+        {tasksArray.map((task, index) => (
+          <li key={index} className="task-item">
+            <input
+              type="checkbox"
+              checked={taskCompleted[index]}
+              onChange={() => handleCheckboxChange(index)}
+              className="task-checkbox"
+            />
+            <span style={{ textDecoration: taskCompleted[index] ? 'line-through' : 'none' }} className="task-text">
+              <h4>{task}</h4>
+            </span>
+            <button onClick={() => startTimer(index)} disabled={timerIntervals[index]} className="timer-button">
+              Start
+            </button>
+            <button onClick={() => stopTimer(index)} disabled={!timerIntervals[index]} className="timer-button">
+              Stop
+            </button>
+            <span className="timer">{formatTime(timers[index])}</span>
+            <button onClick={() => handleDelete(index)} className="delete-button">Delete</button>
+          </li>
+        ))}
       </ul>
-    </>
+    </div>
   );
 }
 
